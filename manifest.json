@@ -1,0 +1,31 @@
+{
+  "name": "Chelewonder",
+  "version": "0.1",
+  "description": "Querés ver tu menú? Tomá wachin",
+  "manifest_version": 2,
+  "author": "Marian0",
+  "browser_action": {
+    "default_icon": "128.png"
+  },
+  "permissions": [
+    "activeTab"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "http://w1131323.ferozo.com/wonderfood/Pedidos*"
+      ],
+      "js": [
+        "pedidos.js"
+      ]
+    },
+    {
+      "matches": [
+        "http://w1131323.ferozo.com/wonderfood/Productos*"
+      ],
+      "js": [
+        "productos.js"
+      ]
+    }
+  ]
+}
