@@ -17,6 +17,7 @@ function textoComida(id, comida) {
 if (fecha_lunes && hoy.getDate() - fecha_lunes.textContent < 5 && hoy.getDate() - fecha_lunes.textContent > 0) {
   dias.forEach(dia => {
 
+
     const almuerzo_container = document.querySelector(`#grdInfo_cmb${dia}_0`)
     const almuerzo_opcion = document.querySelector(`#grdInfo_cmb${dia}_0 option[selected]`).textContent;
 
@@ -57,9 +58,6 @@ const preferencias = document.getElementById('colPrefe')
 
 if (preferencias) {
   preferencias.innerHTML += '<div style="color: black; font-size: 18px; margin: 15px 50px;">'
-    + 'Fijate qué goma trae cada plato <a href="/wonderfood/Productos.aspx">acá</a></div>'
+    + 'Maravillate con cuánta berenjena viene tu plato <a href="/wonderfood/Productos.aspx">acá</a></div>'
   // 
 }
-
-
-
