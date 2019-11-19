@@ -17,7 +17,6 @@ function textoComida(id, comida) {
 if (fecha_lunes && hoy.getDate() - fecha_lunes.textContent < 5 && hoy.getDate() - fecha_lunes.textContent > 0) {
   dias.forEach(dia => {
 
-
     const almuerzo_container = document.querySelector(`#grdInfo_cmb${dia}_0`)
     const almuerzo_opcion = document.querySelector(`#grdInfo_cmb${dia}_0 option[selected]`).textContent;
 
@@ -29,25 +28,21 @@ if (fecha_lunes && hoy.getDate() - fecha_lunes.textContent < 5 && hoy.getDate() 
 
     almuerzo_container.parentElement.innerHTML = textoComida('a_' + dia, almuerzo);
     postre_container.parentElement.innerHTML = textoComida('p_' + dia, postre);
-    if (dias[hoy.getDay()] === dia) {
+    if (dias[hoy.getDay() - 1] === dia) {
       document.getElementById(`a_${dia}`).parentElement.style = 'background: lightblue;'
       document.getElementById(`p_${dia}`).parentElement.style = 'background: lightblue;'
     }
-
-    if (alert) {
-      alert.innerHTML = textoBanner(almuerzo, postre);
-    }
-
   })
-} else {
-  if (alert && txt.textContent.includes('ALMUERZO')) {
-    const dividido = txt.textContent.split('ALMUERZO')[1].split('y POSTRE');
-    const almuerzo = dividido[0].replace(/[^a-zA-Z ]/g, "").trim();
-    const postre = dividido[dividido.length - 1].replace(/[^a-zA-Z ]/g, "").trim();
-    if (dividido.length === 3) postre = 'POSTRE ' + postre;
-    alert.innerHTML = textoBanner(almuerzo, postre);
-  }
 }
+
+if (alert && txt.textContent.includes('ALMUERZO')) {
+  const dividido = txt.textContent.split('ALMUERZO')[1].split('y POSTRE');
+  const almuerzo = dividido[0].replace(/[^a-zA-Z ]/g, "").trim();
+  const postre = dividido[dividido.length - 1].replace(/[^a-zA-Z ]/g, "").trim();
+  if (dividido.length === 3) postre = 'POSTRE ' + postre;
+  alert.innerHTML = textoBanner(almuerzo, postre);
+}
+
 if (alert && hoy.getDay() === 5) {
   alert.innerHTML += `<div style="padding-top: 16px; font-size: 2.3em; font-family: 'Product Sans'">
                       Aunque siendo viernes, puede salir ese SHAWARMA, no?
@@ -58,6 +53,9 @@ const preferencias = document.getElementById('colPrefe')
 
 if (preferencias) {
   preferencias.innerHTML += '<div style="color: black; font-size: 18px; margin: 15px 50px;">'
-    + 'Maravillate con cuánta berenjena viene tu plato <a href="/wonderfood/Productos.aspx">acá</a></div>'
+    + 'Fijate qué goma trae cada plato <a href="/wonderfood/Productos.aspx">acá</a></div>'
   // 
 }
+
+
+
