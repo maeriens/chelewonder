@@ -51,6 +51,9 @@ if (preferencias) {
   // 
 }
 
+console.log(chrome.runtime.getURL('logo.png'));
+document.querySelector('.logo-main').firstElementChild.setAttribute('src', chrome.runtime.getURL('logo.png'));
+
 // Aqui traemos el detalle de cada menu, y mostramos para cada día, el detalle de la opción seleccionada.
 // Tambien agregamos un listener para que si cambia la opción elegida, se actualice el detalle
 traerProductos().then(detalleProductos => {

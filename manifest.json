@@ -34,5 +34,8 @@
         "js/productos.js"
       ]
     }
+  ],
+  "web_accessible_resources": [
+    "logo.png"
   ]
 }
