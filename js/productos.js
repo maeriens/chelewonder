@@ -7,3 +7,5 @@ document.getElementById('cshero-header').innerHTML += `<div
  style='font-size: 20px; text-align: center;'>
  <a style='color:white' href='/wonderfood/Pedidos.aspx'>VOLVE A VER TU VIANDA WACHIN</a>
  </div>`;
+
+ document.querySelector('.logo-main').firstElementChild.setAttribute('src', chrome.runtime.getURL('logo.png'));
