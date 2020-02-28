@@ -1,5 +1,9 @@
 ## Para instalar en Chrome
 
-Ir a `chrome://extensions/`, a la derecha de todo habilitar el `developer mode`.
-Clickear en `load unpacked` a la izquierda, bajar este repo y agregar la carpeta entera.
+Bajar este código clickeando **Clone or Download** acá arriba o clonando el repo con git
+
+Ir a **`chrome://extensions/`**, a la derecha de todo habilitar el `developer mode`.
+
+Clickear en `load unpacked` a la izquierda y agregar la carpeta **entera**.
+
 Y a disfrutar.

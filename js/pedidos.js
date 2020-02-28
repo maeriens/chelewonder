@@ -1,5 +1,5 @@
 const dias = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
-const fecha_lunes = document.getElementById('grdInfo_lblLunes2');
+const fecha_lunes = document.getElementById('grdInfo_ctl01_lblLunes2');
 const alert = document.querySelector('.alert');
 const txt = document.getElementById('lblPedidosdeHoy');
 const hoy = new Date();
@@ -15,10 +15,11 @@ function textoComida(id, comida) {
   return `<div id='${id}' style='color: black; font-size: 1.5em; text-align:center;'>${comida.trim()}</div>`
 }
 
+// Si la comida y la descripción son lo mismo, no muestro la descripción, porque la gente sabe leer creo
 function textoComidaYDesc(id, comida, descripcion) {
   return `<div id="${id}" style="color: black; font-size: 1.2em; text-align:center;">`
-    + `<div style="text-decoration: underline; font-weight: 800;">${comida.trim()}</div>`
-    + `<div>${descripcion.trim()}</div>`
+    + `<div style="text-decoration: underline; font-weight: 800;">${comida}</div>`
+    + `<div>${comida !== descripcion ? descripcion : ''}</div>`
     + '</div>';
 }
 
@@ -54,51 +55,48 @@ if (preferencias) {
 console.log(chrome.runtime.getURL('logo.png'));
 document.querySelector('.logo-main').firstElementChild.setAttribute('src', chrome.runtime.getURL('logo.png'));
 
-// Aqui traemos el detalle de cada menu, y mostramos para cada día, el detalle de la opción seleccionada.
-// Tambien agregamos un listener para que si cambia la opción elegida, se actualice el detalle
-traerProductos().then(detalleProductos => {
-  const getDetalleProducto = (productId) => {
-    const regex = new RegExp(`<td>${productId} .*?td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td>.*?<\/tr>`);
-    const parsedResult = detalleProductos.replace(/\r?\n|\r/g, '').match(regex);
-    if (parsedResult) {
-      const [match, nombre, grupo, subgrupo, habilitado, descripcion] = parsedResult;
-      return { nombre, grupo, subgrupo, habilitado, descripcion };
-    }
-
-    return null;
-  };
-
-  const generarDetalleProducto = (detalle) => {
-    if (detalle) {
-      return `<div style="text-decoration: underline;">${detalle.nombre.trim()}</div>`
-        + `<div>${detalle.descripcion.trim()}</div>`;
-    }
-
-    return '<div>No encontrado</div>';
-  }
-  // `#grdInfo_cmb${dia}_0`
-  const embellecerVista = (dia) => {
-    const almuerzoSelector = `#grdInfo_cmb${dia}_0`;
-    const postreSelector = `#grdInfo_cmb${dia}_0`;
-    const idDestinoAlmuerzo = `a_${dia}`;
-    const idDestinoPostre = `p_${dia}`;
-
-    const almuerzo_container = document.querySelector(almuerzoSelector)
-    const almuerzo_opcion = document.querySelector(`${almuerzoSelector} option[selected]`).value;
-    const detalleAlmuerzo = getDetalleProducto(almuerzo_opcion.trim());
-
-    const postre_container = document.querySelector(`#grdInfo_cmb${dia}_1`)
-    const postre_opcion = document.querySelector(`#grdInfo_cmb${dia}_1 option[selected]`).textContent;
-    const postre = postre_opcion.split('-')[1];
-  
-    if (isCurrentWeek) {
-      almuerzo_container.parentElement.innerHTML = textoComidaYDesc(idDestinoAlmuerzo, detalleAlmuerzo.nombre, detalleAlmuerzo.descripcion);
-      postre_container.parentElement.innerHTML = textoComida(idDestinoPostre, postre);
-      if (dias[hoy.getDay() - 1] === dia) {
-        document.getElementById(idDestinoAlmuerzo).parentElement.style = 'background: lightblue;'
-        document.getElementById(idDestinoPostre).parentElement.style = 'background: lightblue;'
+const hacerMagia = () => {
+  // Aqui traemos el detalle de cada menu, y mostramos para cada día, el detalle de la opción seleccionada.
+  // Tambien agregamos un listener para que si cambia la opción elegida, se actualice el detalle
+  traerProductos().then(detalleProductos => {
+    const getDetalleProducto = (productId) => {
+      const regex = new RegExp(`<td>${productId} .*?td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td><td>(.*?)<\/td>.*?<\/tr>`);
+      const parsedResult = detalleProductos.replace(/\r?\n|\r/g, '').match(regex);
+      if (parsedResult) {
+        const [match, nombre, grupo, subgrupo, habilitado, descripcion] = parsedResult;
+        return { nombre: nombre.trim(), grupo, subgrupo, habilitado, descripcion: descripcion.trim() };
       }
-    } else {
+
+      return null;
+    };
+
+    const generarDetalleProducto = (detalle) => {
+      if (detalle) {
+        return `<div style="text-decoration: underline; color: black; font-size: 2em">${detalle.nombre.trim()}</div>`
+          + `<div>${detalle.descripcion.trim()}</div>`;
+      }
+
+      return '<div>No encontrado</div>';
+    }
+
+    const embellecerVista = (dia) => {
+      const fechaSelector = `#grdInfo_ctl01_lbl${dia}2`;
+      const almuerzoSelector = `#grdInfo_ctl02_cmb${dia}`;
+      const postreSelector = `#grdInfo_ctl03_cmb${dia}`;
+      const idDestinoAlmuerzo = `a_${dia}`;
+      const idDestinoPostre = `p_${dia}`;
+
+      const fecha = document.querySelector(fechaSelector).textContent;
+
+      const almuerzo_container = document.querySelector(almuerzoSelector)
+      const almuerzo_opcion = document.querySelector(`${almuerzoSelector} option[selected]`).value;
+      const detalleAlmuerzo = getDetalleProducto(almuerzo_opcion.trim());
+
+      const postre_container = document.querySelector(postreSelector)
+      const postre_opcion = document.querySelector(`${postreSelector} option[selected]`).textContent;
+      const postre = postre_opcion.split('-')[1];
+
+      // Si no es esta semana, sacamos a la goma el selector directamente
       if (almuerzo_container.disabled) {
         almuerzo_container.setAttribute('style', 'display: none');
       } else {
@@ -112,36 +110,44 @@ traerProductos().then(detalleProductos => {
           });
         }, 100);
       }
-      almuerzo_container.parentElement.setAttribute('style', 'vertical-align: top');
-      const detalle = generarDetalleProducto(detalleAlmuerzo);
-      almuerzo_container.parentElement.innerHTML += `<div id="${idDestinoAlmuerzo}">${detalle}</div>`;
-    }
-  };
 
-  dias.forEach(dia => {
-    embellecerVista(dia);
-  });
-}).catch((e) => {
-  console.error(e);
-  // Dejo esto como fallback
-  if (isCurrentWeek) {
-    dias.forEach(dia => {
-      const almuerzo_container = document.querySelector(`#grdInfo_cmb${dia}_0`)
-      const almuerzo_opcion = document.querySelector(`#grdInfo_cmb${dia}_0 option[selected]`).textContent;
-  
-      const postre_container = document.querySelector(`#grdInfo_cmb${dia}_1`)
-      const postre_opcion = document.querySelector(`#grdInfo_cmb${dia}_1 option[selected]`).textContent;
-  
-      const almuerzo = almuerzo_opcion.split('-')[1];
-      const postre = postre_opcion.split('-')[1];
-  
-      almuerzo_container.parentElement.innerHTML = textoComida('a_' + dia, almuerzo);
-      postre_container.parentElement.innerHTML = textoComida('p_' + dia, postre);
-      if (dias[hoy.getDay() - 1] === dia) {
-        document.getElementById(`a_${dia}`).parentElement.style = 'background: lightblue;'
-        document.getElementById(`p_${dia}`).parentElement.style = 'background: lightblue;'
+      almuerzo_container.parentElement.innerHTML = textoComidaYDesc(idDestinoAlmuerzo, detalleAlmuerzo.nombre, detalleAlmuerzo.descripcion);
+      postre_container.parentElement.innerHTML = textoComida(idDestinoPostre, postre);
+      if (hoy.getDate() === Number(fecha)) {
+        document.getElementById(idDestinoAlmuerzo).parentElement.style = 'background: lightblue;'
+        document.getElementById(idDestinoPostre).parentElement.style = 'background: lightblue;'
       }
-    })
-  }
-});
+    };
 
+    dias.forEach(dia => {
+      embellecerVista(dia);
+    });
+  }).catch((e) => {
+    console.error(e);
+    // Dejo esto como fallback
+    if (isCurrentWeek) {
+      dias.forEach(dia => {
+
+        const almuerzo_container = document.querySelector(`#grdInfo_ctl02_cmb${dia}`)
+        const almuerzo_opcion = document.querySelector(`#grdInfo_ctl02_cmb${dia} option[selected]`).textContent;
+
+        const postre_container = document.querySelector(`#grdInfo_ctl03_cmb${dia}`)
+        const postre_opcion = document.querySelector(`#grdInfo_ctl03_cmb${dia} option[selected]`).textContent;
+
+        const almuerzo = almuerzo_opcion.split('-')[1];
+        const postre = postre_opcion.split('-')[1];
+
+        almuerzo_container.parentElement.innerHTML = textoComida('a_' + dia, almuerzo);
+        postre_container.parentElement.innerHTML = textoComida('p_' + dia, postre);
+        if (dias[hoy.getDay() - 1] === dia) {
+          document.getElementById(`a_${dia}`).parentElement.style = 'background: lightblue;'
+          document.getElementById(`p_${dia}`).parentElement.style = 'background: lightblue;'
+        }
+      })
+    }
+  });
+}
+
+// Cuando no cargaron las cosas, los chelewonders no muestran la grilla. No grilla means no magic.
+const grilla = document.querySelector('#grdInfo');
+if (grilla) { hacerMagia() }
